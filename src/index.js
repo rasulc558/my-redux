@@ -1,51 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import * as actions from "./store/actionTypes";
+import { createStore } from "./store/createStore";
+import { taskReducer } from "./store/taskReducer";
 // import { pipe, compose } from "lodash/fp";
 
 // =================
 // Create own Redux
-function createStore(reducer, initialState) {
-  let state = initialState;
-  let listners = [];
 
-  function getState() {
-    return state;
-  }
+const initialState = [
+  { id: 1, title: "task 1", compleeted: false },
+  { id: 2, title: "task 2", compleeted: false },
+];
 
-  function dispatch(action) {
-    state = reducer(state, action);
-
-    for (let i = 0; i < listners.length; i++) {
-      const listner = listners[i];
-      listner();
-    }
-  }
-
-  function subscribe(listner) {
-    listners.push(listner);
-  }
-
-  return { getState, dispatch, subscribe };
-}
-
-function taskReducer(state, action) {
-  switch (action.type) {
-    case "task/complited": {
-      const newArray = [...state];
-      const elemIndex = newArray.findIndex((el) => el.id === action.payload.id);
-      newArray[elemIndex].compleeted = true;
-      return newArray;
-    }
-    default: {
-      return state;
-    }
-  }
-}
-
-const store = createStore(taskReducer, [
-  { id: 1, description: "task 1", compleeted: false },
-  { id: 2, description: "task 2", compleeted: false },
-]);
+const store = createStore(taskReducer, initialState);
 
 const App = (params) => {
   const [state, setState] = React.useState(store.getState());
@@ -55,19 +23,30 @@ const App = (params) => {
   }, []);
 
   const completTask = (taskId) => {
-    store.dispatch({ type: "task/complited", payload: { id: taskId } });
+    store.dispatch({
+      type: actions.taskUpdated,
+      payload: { id: taskId, compleeted: true },
+    });
+  };
+
+  const changeTitle = (taskId) => {
+    store.dispatch({
+      type: actions.taskUpdated,
+      payload: { id: taskId, title: "updated title: " + taskId },
+    });
   };
 
   return (
     <>
-      <h1>Create Rdux</h1>
+      <h1>Create Redux</h1>
 
       <ul>
         {state.map((el) => (
           <li key={el.id}>
-            <p>{el.description}</p>
+            <p>{el.title}</p>
             <p>{`Completed: ${el.compleeted}`}</p>
             <button onClick={() => completTask(el.id)}>Compleet</button>
+            <button onClick={() => changeTitle(el.id)}>Change Title</button>
             <hr />
           </li>
         ))}
