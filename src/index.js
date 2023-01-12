@@ -1,14 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import * as actions from "./store/actions";
+import { taskCompleeted, taskDelete, titleChange } from "./store/task";
 
-import { initializeStore } from "./store/store";
+import configureStore from "./store/store";
 // import { pipe, compose } from "lodash/fp";
 
 // =================
 // Create own Redux
 
-const store = initializeStore();
+const store = configureStore();
 
 const App = (params) => {
   const [state, setState] = React.useState(store.getState());
@@ -18,15 +18,15 @@ const App = (params) => {
   }, []);
 
   const completTask = (taskId) => {
-    store.dispatch(actions.taskCompleeted(taskId));
+    store.dispatch(taskCompleeted(taskId));
   };
 
   const changeTitle = (taskId) => {
-    store.dispatch(actions.titleChange(taskId));
+    store.dispatch(titleChange(taskId));
   };
 
   const deleteTask = (taskId) => {
-    store.dispatch(actions.taskDelete(taskId));
+    store.dispatch(taskDelete(taskId));
   };
 
   return (
