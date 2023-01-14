@@ -92,7 +92,7 @@ export const completTask = (taskId) => (dispatch, getState) => {
 // const taskRequested = createAction("task/requested");
 // const taskRequestFailed = createAction("task/requestfailed");
 
-export const getTasks = () => async (dispatch) => {
+export const loadTasks = () => async (dispatch) => {
   dispatch(taskRequested());
   try {
     const data = await todosServices.fetchAll();
@@ -111,4 +111,11 @@ export function taskDelete(taskId) {
   return remove({ id: taskId });
 }
 
+export const getTasks = () => (state) => {
+  return state.tasks.entities;
+};
+
+export const getTasksLoadingStatus = () => (state) => {
+  return state.tasks.isLoading;
+};
 export default taskReducer;

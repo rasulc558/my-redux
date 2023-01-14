@@ -1,8 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { completTask, taskDelete, titleChange, getTasks } from "./store/task";
+import {
+  completTask,
+  taskDelete,
+  titleChange,
+  getTasks,
+  getTasksLoadingStatus,
+  loadTasks,
+} from "./store/task";
 import configureStore from "./store/store";
 import { Provider, useDispatch, useSelector } from "react-redux";
+import { getError } from "./store/errors";
 // import { pipe, compose } from "lodash/fp";
 
 // =================
@@ -13,14 +21,14 @@ const store = configureStore();
 //
 
 const App = (params) => {
-  const state = useSelector((store) => store.tasks.entities);
+  const state = useSelector(getTasks());
   const dispatch = useDispatch();
-  const isLoading = useSelector((store) => store.tasks.isLoading);
-  const error = useSelector((store) => store.errors.entities[0]);
+  const isLoading = useSelector(getTasksLoadingStatus());
+  const error = useSelector(getError());
   // const [state, setState] = React.useState(store.getState()); // useSelector заменил
 
   React.useEffect(() => {
-    dispatch(getTasks());
+    dispatch(loadTasks());
     // store.subscribe(() => setState(store.getState())); useSelector автоматически обновляет наш компонент
   }, []);
 
