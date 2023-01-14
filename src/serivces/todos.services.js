@@ -16,6 +16,15 @@ const todosServices = {
       return Promise.reject(error);
     }
   },
+  add: async (config) => {
+    try {
+      const { data } = await httpServices.post(todosEndpoint, config);
+
+      return data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
 };
 
 export default todosServices;

@@ -7,6 +7,7 @@ import {
   getTasks,
   getTasksLoadingStatus,
   loadTasks,
+  addTask,
 } from "./store/task";
 import configureStore from "./store/store";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -57,6 +58,13 @@ const App = (params) => {
   return (
     <>
       <h1>Create Redux</h1>
+
+      <button
+        onClick={() => dispatch(addTask())}
+        style={{ background: "green" }}
+      >
+        Add ToDos
+      </button>
 
       <ul>
         {state.map((el) => (

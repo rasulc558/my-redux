@@ -32,6 +32,10 @@ const taskSlice = createSlice({
         ...action.payload,
       };
     },
+    add(state, action) {
+      state.entities.push(action.payload);
+      state.isLoading = false;
+    },
     remove(state, action) {
       state.entities = state.entities.filter(
         (el) => el.id !== action.payload.id
@@ -78,11 +82,29 @@ function _taskReducer(state, action) {
 */
 
 const { actions, reducer: taskReducer } = taskSlice;
-const { update, remove, recived, taskRequestFailed, taskRequested } = actions;
+const { update, remove, recived, taskRequestFailed, taskRequested, add } =
+  actions;
 
 export const completTask = (taskId) => (dispatch, getState) => {
-  console.log(taskId);
   dispatch(update({ id: taskId, completed: true }));
+};
+
+export const addTask = () => async (dispatch) => {
+  dispatch(taskRequested());
+
+  try {
+    const data = await todosServices.add({
+      userId: 1,
+      id: 3,
+      title: "MY TASKS",
+      completed: false,
+    });
+
+    dispatch(add(data));
+  } catch (error) {
+    dispatch(taskRequestFailed());
+    dispatch(setError(error.message));
+  }
 };
 
 // export function taskCompleeted(taskId) {
