@@ -1,19 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import * as actions from "./store/actionTypes";
-import { createStore } from "./store/createStore";
-import { taskReducer } from "./store/taskReducer";
+import * as actions from "./store/actions";
+
+import { initializeStore } from "./store/store";
 // import { pipe, compose } from "lodash/fp";
 
 // =================
 // Create own Redux
 
-const initialState = [
-  { id: 1, title: "task 1", compleeted: false },
-  { id: 2, title: "task 2", compleeted: false },
-];
-
-const store = createStore(taskReducer, initialState);
+const store = initializeStore();
 
 const App = (params) => {
   const [state, setState] = React.useState(store.getState());
@@ -23,17 +18,15 @@ const App = (params) => {
   }, []);
 
   const completTask = (taskId) => {
-    store.dispatch({
-      type: actions.taskUpdated,
-      payload: { id: taskId, compleeted: true },
-    });
+    store.dispatch(actions.taskCompleeted(taskId));
   };
 
   const changeTitle = (taskId) => {
-    store.dispatch({
-      type: actions.taskUpdated,
-      payload: { id: taskId, title: "updated title: " + taskId },
-    });
+    store.dispatch(actions.titleChange(taskId));
+  };
+
+  const deleteTask = (taskId) => {
+    store.dispatch(actions.taskDelete(taskId));
   };
 
   return (
@@ -47,6 +40,12 @@ const App = (params) => {
             <p>{`Completed: ${el.compleeted}`}</p>
             <button onClick={() => completTask(el.id)}>Compleet</button>
             <button onClick={() => changeTitle(el.id)}>Change Title</button>
+            <button
+              style={{ background: "red" }}
+              onClick={() => deleteTask(el.id)}
+            >
+              Delete
+            </button>
             <hr />
           </li>
         ))}
